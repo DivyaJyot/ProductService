@@ -1,7 +1,16 @@
 package com.scaledivya.ProductService.exception;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class InvalidProductIdException extends Exception{
-    public InvalidProductIdException(){
-        super();
+
+    private Long productId;
+    public InvalidProductIdException(Long productId, String message)
+    {
+        super(message);
+        this.productId=productId;
     }
 }

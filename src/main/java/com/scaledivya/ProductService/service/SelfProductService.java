@@ -3,22 +3,25 @@ package com.scaledivya.ProductService.service;
 import com.scaledivya.ProductService.exception.InvalidProductIdException;
 import com.scaledivya.ProductService.model.Category;
 import com.scaledivya.ProductService.model.Product;
+import com.scaledivya.ProductService.projection.ProductWithIdAndTitle;
 import com.scaledivya.ProductService.repository.CategoryRepository;
 import com.scaledivya.ProductService.repository.ProductRepository;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service("SelfProductService")
-public class SelfProductService implements ProductService{
+@Primary
+public class SelfProductService implements ProductService {
 
     private ProductRepository productRepository;
     private CategoryRepository categoryRepository;
 
-    SelfProductService(ProductRepository productRepository, CategoryRepository categoryRepository){
-        this.productRepository=productRepository;
-        this.categoryRepository=categoryRepository;
+    SelfProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
+        this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -28,25 +31,25 @@ public class SelfProductService implements ProductService{
 
     public Product getProductById(Long id) throws InvalidProductIdException {
         Optional<Product> product = productRepository.findById(id);
-        if(!product.isPresent()){
-            return null;
+        if (!product.isPresent()) {
+            throw new InvalidProductIdException(id, "id not present");
         }
         return product.get();
     }
 
     @Override
     public void deleteProduct(Long id) {
-            productRepository.deleteById(id);
+        productRepository.deleteById(id);
     }
 
     @Override
     public Product createProduct(Product product) {
-        Category cat= product.getCategory();
-        Optional<Category> cat2=categoryRepository.findByTitle(cat.getTitle());
-        if(!cat2.isPresent())
+        Category cat = product.getCategory();
+        Optional<Category> cat2 = categoryRepository.findByTitle(cat.getTitle());
+        if (!cat2.isPresent())
             categoryRepository.save(cat);
 
-        else{
+        else {
             product.setCategory(cat2.get());
         }
         return productRepository.save(product);
@@ -60,5 +63,15 @@ public class SelfProductService implements ProductService{
     @Override
     public Product replaceProduct(Long productId, Product product) {
         return productRepository.save(product);
+    }
+
+    @Override
+    public List<ProductWithIdAndTitle> getFilteredProduct() {
+        return productRepository.executeHQLQuery();
+    }
+
+    @Override
+    public ProductWithIdAndTitle getspecificProduct() {
+        return productRepository.executeNativeQuery(3L);
     }
 }

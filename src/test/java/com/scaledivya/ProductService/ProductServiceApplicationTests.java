@@ -22,12 +22,14 @@ class ProductServiceApplicationTests {
 
 	@Test
 	public void testQueries(){
-		List<ProductWithIdAndTitle> list=productRepository.executeCustomeQuery();
+		//List<ProductWithIdAndTitle> list=productRepository.executeCustomQuery();
+		List<ProductWithIdAndTitle> list=productRepository.executeHQLQuery();
 		for(ProductWithIdAndTitle p:list){
 			System.out.println("id= "+p.getId() +"  title="+ p.getTitle());
 
 		}
-
+		//List<ProductWithIdAndTitle> p2=productRepository.executeHQLQuery();
+		//System.out.println("id= "+p2.getId() +"  title="+ p2.getTitle());
 	}
 
 }

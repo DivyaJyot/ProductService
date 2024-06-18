@@ -2,6 +2,7 @@ package com.scaledivya.ProductService.controller;
 
 import com.scaledivya.ProductService.exception.InvalidProductIdException;
 import com.scaledivya.ProductService.model.Product;
+import com.scaledivya.ProductService.projection.ProductWithIdAndTitle;
 import com.scaledivya.ProductService.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,9 +23,14 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getProduct(@RequestParam long id) throws InvalidProductIdException {
+    @GetMapping("/id")
+    public ResponseEntity<?> getProduct(@RequestParam Long id) throws InvalidProductIdException {
         return new ResponseEntity<Product>(productService.getProductById(id),HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProductSpecific(@PathVariable("id") Long id ) throws InvalidProductIdException {
+        return new ResponseEntity<ProductWithIdAndTitle>((ProductWithIdAndTitle) productService.getProductById(id),HttpStatus.OK);
     }
 
     @GetMapping
@@ -51,6 +57,11 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable Long id) {
 
+    }
+
+    @GetMapping("/filtered")
+    public ResponseEntity<?> getFilteredProduct() throws InvalidProductIdException {
+        return new ResponseEntity<>(productService.getFilteredProduct(),HttpStatus.OK);
     }
 }
 

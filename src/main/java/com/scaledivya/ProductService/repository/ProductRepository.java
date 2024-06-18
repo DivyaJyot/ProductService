@@ -4,6 +4,7 @@ import com.scaledivya.ProductService.model.Product;
 import com.scaledivya.ProductService.projection.ProductWithIdAndTitle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -24,5 +25,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Override
     <S extends Product> S save(S entity);
     @Query("select p.id as id, p.title as title from Product p where p.price<40000")
-    List<ProductWithIdAndTitle> executeCustomeQuery();
+    List<ProductWithIdAndTitle> executeHQLQuery();
+
+
+    @Query(value = "select p.id as id, p.title as title from Product p where p.id=:id",nativeQuery = true)
+    ProductWithIdAndTitle executeNativeQuery(@Param("id") Long id);
 }

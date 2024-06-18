@@ -17,6 +17,7 @@ CREATE TABLE product
     price DOUBLE NOT NULL,
     `description` VARCHAR(255) NULL,
     image         VARCHAR(255) NULL,
+    quantity      VARCHAR(255) NULL,
     CONSTRAINT pk_product PRIMARY KEY (id)
 );
 
