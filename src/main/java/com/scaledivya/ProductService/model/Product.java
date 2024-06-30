@@ -18,6 +18,6 @@ public class Product extends BaseModel {
     private  double price;
     private String description;
     private String image;
-    private String quantity;
+   // private int quantity;
 
 }

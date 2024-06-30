@@ -1,7 +1,9 @@
 package com.scaledivya.ProductService.controller;
 
+import com.scaledivya.ProductService.commons.AuthorizationCommons;
 import com.scaledivya.ProductService.exception.InvalidProductIdException;
 import com.scaledivya.ProductService.model.Product;
+import com.scaledivya.ProductService.model.Userdto;
 import com.scaledivya.ProductService.projection.ProductWithIdAndTitle;
 import com.scaledivya.ProductService.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ import java.util.List;
 public class ProductController {
 @Autowired
     private ProductService productService;
+@Autowired
+private AuthorizationCommons authenticationComm;
 
     ProductController(@Qualifier("SelfProductService") ProductService productService) {
         this.productService = productService;
@@ -33,12 +37,17 @@ public class ProductController {
         return new ResponseEntity<ProductWithIdAndTitle>((ProductWithIdAndTitle) productService.getProductById(id),HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<?> getAllProducts() {
+    @GetMapping("/token/{token}")
+    public ResponseEntity<?> getAllProducts(@PathVariable String token) {
+        Userdto userdto=authenticationComm.validateToken(token);
+        if(userdto==null){
+            System.out.println("token invalid");
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         return new ResponseEntity<List<Product>>(productService.getAllProducts(),HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping//http:localhost:8082/products
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
         return new ResponseEntity<Product>(productService.createProduct(product),HttpStatus.OK);
     }
